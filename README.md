@@ -6,6 +6,8 @@ This code is not yet fully functional and is NOT intended for public use.
 
 ### Using with AWS Lambda:
 
+The lambda function code is located inside of the "zip" directory
+
 1. Install pandas, numpy, matplotlib, and all of their dependencies in a local environment, we recommend inside of the "zip" folder.
 
 2. Clean up files and zip the folder with your installations as well as lambda_function.py
