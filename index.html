@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Covid Alert (Alpha Version)</title>
+        <link rel="stylesheet" type=text/css href="main.css">
+        <script type="text/javascript" src="script.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <title>Northern Nevada COVID-19 Alert (Alpha Version)</title>
     </head>
+    <script>
+        $(function(){
+        $("#nav-placeholder").load("navbar.html");
+        });
+    </script>
+    
+    <div id="nav-placeholder" style="margin:0; padding:0;"></div>
+    
     <body>
-        <p>Current Code</p>
-        <img src="https://current-color.s3-us-west-1.amazonaws.com/current_code/current.png" />
-        <p>How this was calculated: [tba]</p>
+        <h1>Covid Alert Level for Northern Nevada</h1>
+        <h1 style="color: red;">If you happened to land here, please note this page is still under development</h1>
+        <p>Current "Burn" Code</p>
+        <img src="resources/filler.svg" style="width: 200px; height:100px;"/>
+        <p><button type="button" onclick="expandDiv('howCalculated')">How is this code calculated?</button></p>
+        <div id="howCalculated" style="display: none;">
+            <p>Here are the metrics that went into the alert code:</p>
+            <ul>
+                <li>
+                    <img class="calculations_img" src="resources/filler.svg" /><span class="calculations_text">TBA</span>
+                </li>
+                <li>
+                    <img class="calculations_img" src="resources/filler.svg" /><span class="calculations_text">TBA</span>
+                </li>
+            </ul>
+        </div>
     </body>
 </html>

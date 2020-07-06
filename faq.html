@@ -1,8 +1,58 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>COVID FAQ</title>
+        <link rel="stylesheet" type=text/css href="main.css">
+        <script type="text/javascript" src="script.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <title>FAQ | Northern Nevada COVID-19 Alert (Alpha Version)</title>
     </head>
-    <body>  
+    <script>
+        $(function(){
+        $("#nav-placeholder").load("navbar.html");
+        });
+    </script>
+    
+    <div id="nav-placeholder" style="margin:0; padding:0;"></div>
+    <body>
+        <h1>Frequenty Asked Questions about COVID-19</h1>
+        <p>
+            Some disclaimer etc.
+        </p>
+        <p><button type="button" onclick="expandDiv('cantested')">Can I get tested?</button></p>
+        <div id="cantested" style="display: none;">
+            <p>
+                TBA
+            </p>
+        </div>
+        <p><button type="button" onclick="expandDiv('howtested')">How and where do I get tested?</button></p>
+        <div id="howtested" style="display: none;">
+            <p>
+                TBA
+            </p>
+        </div>
+        <p><button type="button" onclick="expandDiv('doihave')">Do I have COVID-19?</button></p>
+        <div id="doihave" style="display: none;">
+            <p>
+                TBA
+            </p>
+        </div>
+        <p><button type="button" onclick="expandDiv('maskwork')">Does wearing a mask really work?</button></p>
+        <div id="maskwork" style="display: none;">
+            <p>
+                TBA
+            </p>
+        </div>
+        <p><button type="button" onclick="expandDiv('incontact')">What do I do if I've been in contact with someone who has COVID-19?</button></p>
+        <div id="incontact" style="display: none;">
+            <p>
+                TBA
+            </p>
+        </div>
+        <p><button type="button" onclick="expandDiv('maskreq')">Do I have to wear a mask?</button></p>
+        <div id="maskreq" style="display: none;">
+            <p>
+                TBA
+            </p>
+        </div>
     </body>
 </html>
