@@ -86,3 +86,9 @@ body {
     padding: 0;
     margin: 0;
 }
+
+div .indented {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 20px;
+}
