@@ -55,7 +55,6 @@ def get_color(df):
 def update_graphic(colorStr):
     s3_resource = boto3.resource("s3")
     image_to_copy = "covid-alert-graphics/" + colorStr.lower() + ".png"
-    print("Image was: "+image_to_copy)
     #remove the old color image
     s3_resource.Object("covid-alert-graphics", "current_code/current.png").delete()
     #copy the correct image to s3 url that is fetched
@@ -64,21 +63,27 @@ def update_graphic(colorStr):
 
 
 def lambda_handler(event, context):
-    s3_client = boto3.client("s3")
-    file_obj = event["Records"][0]
-    file_name = str(file_obj["s3"]["object"]["key"])
-    fileObj = s3_client.get_object(Bucket = "covid-alert-table-upload", Key=file_name)
-    file_content = fileObj["Body"].read()#.decode("utf-8")
-    b = io.BytesIO(file_content) # read the excel file from aws format to python-friendly format
-    df = pd.read_excel(b, sheet_name='data')
+    try:
+        s3_client = boto3.client("s3")
+        file_obj = event["Records"][0]
+        file_name = str(file_obj["s3"]["object"]["key"])
+        fileObj = s3_client.get_object(Bucket = "covid-alert-table-upload", Key=file_name)
+        file_content = fileObj["Body"].read()#.decode("utf-8")
+        b = io.BytesIO(file_content) # read the excel file from aws format to python-friendly format
+        df = pd.read_excel(b, sheet_name='data')
 
-    color = get_color(df)
-    update_graphic(color)
-    print('updated')
-    update_timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(update_timestamp)
+        color = get_color(df)
+        update_graphic(color)
+        update_timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(update_timestamp)
 
-    return {
-        'statusCode': 200,
-        'body': file_name + " succesfully loaded and processed by AWS Lambda\n The color code was: " + color + "\n This calculation was completed at " + update_timestamp
-    }
+        return {
+            'statusCode': 200,
+            'body': file_name + " succesfully loaded and processed by AWS Lambda\n The color code was: " + color + "\n This calculation was completed at " + update_timestamp
+        }
+    except Exception as e:
+        print(str(e))
+        return{
+            'statusCode': 500,
+            'body': "There was an internal error while attempting to update the code. Please check the log or contact colab[at]jackhester[dot]com."
+        }
