@@ -54,12 +54,18 @@ def get_color(df):
 """
 def update_graphic(colorStr):
     s3_resource = boto3.resource("s3")
-    image_to_copy = "covid-alert-graphics/" + colorStr.lower() + ".png"
-    #remove the old color image
-    s3_resource.Object("covid-alert-graphics", "current_code/current.png").delete()
+    metric_to_copy = "covid-alert-graphics/" + colorStr.lower() + "_metric.png"
+    text_to_copy = "covid-alert-graphics/" + colorStr.lower() + "_text.png"
+    #remove the old metric image and text image
+    s3_resource.Object("covid-alert-graphics", "current_code/current_metric.png").delete()
+    #s3_resource.Object("covid-alert-graphics", "current_code/current_text.png").delete()
+    
     #copy the correct image to s3 url that is fetched
-    s3_resource.Object("covid-alert-graphics", "current_code/current.png").copy_from(CopySource=image_to_copy)
-    s3_resource.ObjectAcl('covid-alert-graphics','current_code/current.png').put(ACL='public-read')
+    s3_resource.Object("covid-alert-graphics", "current_code/current_metric.png").copy_from(CopySource=metric_to_copy)
+    s3_resource.ObjectAcl('covid-alert-graphics','current_code/current_metric.png').put(ACL='public-read')
+
+    #s3_resource.Object("covid-alert-graphics", "current_code/current_text.png").copy_from(CopySource=text_to_copy)
+    #s3_resource.ObjectAcl('covid-alert-graphics','current_code/current_text.png').put(ACL='public-read')
 
 
 def lambda_handler(event, context):
