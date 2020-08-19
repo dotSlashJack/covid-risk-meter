@@ -45,3 +45,13 @@ zip/xlrd-1.2.0.dist-info/*
 test_code/
 test_code
 test_code/*
+covidguages/*
+covidguates/
+references/*
+references/
+zip/scipy/
+zip/scipy/*
+website/
+website/*
+deprecated/
+deprecated/*

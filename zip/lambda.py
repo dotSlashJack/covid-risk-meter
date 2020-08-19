@@ -8,10 +8,12 @@ import json
 import boto3
 import numpy as np
 import pandas as pd
+import io
 #import matplotlib.pyplot as plt
 import datetime as dt
+
 import threatMeter
-import io
+#import governorMetric
 
 # moves correct graphic to s3 bucket grabbed by the website
 
@@ -55,7 +57,7 @@ def get_color(df):
 def update_graphic(colorStr):
     s3_resource = boto3.resource("s3")
     metric_to_copy = "covid-alert-graphics/" + colorStr.lower() + "_metric.png"
-    text_to_copy = "covid-alert-graphics/" + colorStr.lower() + "_text.png"
+    #text_to_copy = "covid-alert-graphics/" + colorStr.lower() + "_text.png"
     #remove the old metric image and text image
     s3_resource.Object("covid-alert-graphics", "current_code/current_metric.png").delete()
     #s3_resource.Object("covid-alert-graphics", "current_code/current_text.png").delete()

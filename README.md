@@ -1,8 +1,5 @@
 # covid-alert
-Code for covid-alert.org, developed for the City of Reno Public Health Emergency Advisory Board
->#
-This code is not yet fully implemented and is NOT intended for public use.
->#
+Code for tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
 
 ### Using with AWS Lambda:
 
@@ -12,7 +9,7 @@ The lambda function and supporing code are located inside of the "zip" directory
 
 2. Clean up files and zip the folder with your installations as well as lambda.py and threatMeter.py
 
-3. Upload the zip to AWS Lambda (probably onto an s3 bucket)
+3. Upload the zip to AWS Lambda (probably via an s3 bucket)
 
 4. Configure an s3 bucket to store the relevant images and update code accordingly
 
@@ -24,7 +21,12 @@ The lambda function and supporing code are located inside of the "zip" directory
 
 ### Other files
 
-There are a few other files on here that we have used to grab some of the data and work towards a frontend website (e.g., dhss_covid_scraper.py). You are welcome to take a look at those, but they are probably not very useful to you. Some reorgainization and cleanup of this repo are in order in the near future.
+There are a few other files on here in the "misc" folder that we have used to grab some of the data and work towards a frontend website (e.g., dhss_covid_scraper.py). You are welcome to take a look at those, but they are probably not very useful to you. We also have an admin upload page that we use to upload the new excel file each day (and automatically update the metric from there); feel free to contact us if you would like information on how to set up your own admin page or would like a copy of our code for that portion of the project.
 
 ### Contact
+
 colab[at]jackhester[dot]com or jsmith[at]tmrpa[dot]org
+
+>#
+This code is still under development and is NOT intended for public use. We provide no warranty or guarantee that our code works or will be useful or accurate.
+>#
