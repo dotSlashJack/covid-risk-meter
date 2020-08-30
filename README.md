@@ -21,12 +21,14 @@ The lambda function and supporing code are located inside of the "zip" directory
 
 ### Other files
 
-There are a few other files on here in the "misc" folder that we have used to grab some of the data and work towards a frontend website (e.g., dhss_covid_scraper.py). You are welcome to take a look at those, but they are probably not very useful to you. We also have an admin upload page that we use to upload the new excel file each day (and automatically update the metric from there); feel free to contact us if you would like information on how to set up your own admin page or would like a copy of our code for that portion of the project.
+There are a few other files on here in the "misc" folder that we have used to grab some of the data and work towards a frontend website (e.g., dhss_covid_scraper.py). You are welcome to take a look at those, but they are probably not very useful to you. We also have an admin upload page that we use to upload the new excel file each day (and automatically update the metric from there); feel free to contact us if you would like information on how to set up your own admin page or would like a copy of our code for that portion of the project. These files will likely be removed from the main repository by September 4, 2020. We will likely maintain a copy on the active dev branch.
 
 ### Contact
 
 colab[at]jackhester[dot]com or jsmith[at]tmrpa[dot]org
 
+&#x1F534;
 >#
-This code is still under development and is NOT intended for public use. We provide no warranty or guarantee that our code works or will be useful or accurate.
+>This code is still under development and is NOT intended for public use. We provide no warranty or guarantee that our code works or will be useful or accurate.
 >#
+&#x1F534;
