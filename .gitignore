@@ -55,3 +55,4 @@ website/
 website/*
 deprecated/
 deprecated/*
+zip/test.py

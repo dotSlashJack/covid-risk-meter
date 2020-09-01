@@ -33,6 +33,8 @@ def update_metric(df):
     s3_resource.Object("covid-alert-graphics", "current_code/current_metric.png").copy_from(CopySource=metric_to_copy)
     s3_resource.ObjectAcl('covid-alert-graphics', 'current_code/current_metric.png').put(ACL='public-read')
     
+    plot.plot_test(df,s3_resource)
+
     return threat_color.lower()
 
 
@@ -47,7 +49,6 @@ def lambda_handler(event, context):
         df = pd.read_excel(b, sheet_name='data')
 
         color = update_metric(df)
-        plot.plot_test(df)
         #update_timestamp()
         #calculate.nv_state_calculator(df)
 

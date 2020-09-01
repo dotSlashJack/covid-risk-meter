@@ -77,7 +77,7 @@ def metric_calcs(df):
     # 4a. % diffence of 7-day and 14-day average in hospitalizations due to covid...
     # ...divided by the 14-day average in hospitalizations due to covid
     # assigned 1/2 weight
-    covid_hosp_rate = threat.ThreatCalculator(df, 'Total_COVID', 7, asPercentage=True)
+    covid_hosp_rate = threat.ThreatCalculator(df, 'Total_COVID', 7)
     covid_hosp_calc = covid_hosp_rate.to_percentage(covid_hosp_rate.diff_avg_over_second_avg(14))
     #print(covid_hosp_calc)
     indSumList.append(0.5 * thresholdRanger(covid_hosp_calc, [-5,5,25]))
@@ -85,21 +85,21 @@ def metric_calcs(df):
     # 4b. % diffence of 7-day and 14-day average in icu use due to covid...
     # ...divided by the 14-day average in icu use due to covid
     # assigned 1/2 weight
-    covid_icu_use = threat.ThreatCalculator(df, 'COVID_ICU', 7, asPercentage=True)
+    covid_icu_use = threat.ThreatCalculator(df, 'COVID_ICU', 7)
     covid_icu_calc = covid_icu_use.to_percentage(covid_icu_use.diff_avg_over_second_avg(14))
     indSumList.append(0.5 * thresholdRanger(covid_icu_calc, [-5,5,25]))
     
     
     # 5a. % utilization of overall hospital beds, avg over 7 days
     # assigned 1/2 weight
-    hosp_use = threat.ThreatCalculator(df, 'Inpatient', 7, asPercentage=True)
+    hosp_use = threat.ThreatCalculator(df, 'Inpatient', 7)
     hosp_use_calc = hosp_use.to_percentage(hosp_use.div_avgs('Staffed_Beds'))
     indSumList.append(0.5 * thresholdRanger(hosp_use_calc, [70,80,85]))
     
     
     # 5b. % utilization of overall icu beds, avg over 7 days
     # assigned 1/2 weight
-    icu_use = threat.ThreatCalculator(df, 'ICU_Beds_Occ', 7, asPercentage=True)
+    icu_use = threat.ThreatCalculator(df, 'ICU_Beds_Occ', 7)
     icu_use_calc = icu_use.to_percentage(icu_use.div_avgs('ICU_Beds'))
     indSumList.append(0.5 * thresholdRanger(icu_use_calc, [70,80,85]))
     

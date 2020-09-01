@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import boto3
 import io
+from boto3.dynamodb.conditions import Key
 
 class Plotter:
     def __init__(self, data, labels=['title','x_title','y_title']):
@@ -87,15 +88,16 @@ class Plotter:
     def save_plot(self, saveName=None, aws=False, bucket_name=None):
         # TODO: update this for AWS lambda
         if aws:
+            filename = saveName+'.png'
+
             img_data = io.BytesIO()
             plt.savefig(img_data, format='png')
             img_data.seek(0)
-            k = bucket_name+'/'+saveName+'.png'
-            
-            bucket = aws.Bucket(bucket_name)
-            bucket.put_object(Body=img_data, ContentType='image/png',key=k).put_object_acl(ACL='public-read')
-            print('successfully saved plot to '+k)
+
+            object = aws.Object(bucket_name, filename)
+            object.put(Body=img_data)
+
+            plt.close('all')
         else:
             plt.savefig(saveName)
-        
-        
+            plt.close('all')
