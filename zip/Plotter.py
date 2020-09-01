@@ -3,7 +3,7 @@
 """
 Created on Thu Aug 27 12:33:43 2020
 
-@author: jack h
+@author: jack hester
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +11,13 @@ import boto3
 import io
 from boto3.dynamodb.conditions import Key
 
+"""
+Class Plotter
+Generate bar and scatter plots based on data lists and add trendlines using OLS and moving averages
+***
+param data, a list of the data points to plot
+param lables, a list of axis and plot titles in the order of [title, x-axis title, y-axis title]
+"""
 class Plotter:
     def __init__(self, data, labels=['title','x_title','y_title']):
         self.data = data
@@ -34,19 +41,18 @@ class Plotter:
     def scatter_plot(self):
         x = np.linspace(1, len(self.data), len(self.data))
         plt.plot(x, self.data, 'o', color='black')
-        plt.title = self.labels[0]
-        plt.xlabel = self.labels[1]
-        plt.ylabel = self.labels[2]
+        plt.title(self.labels[0])
+        plt.xlabel(self.labels[1])
+        plt.ylabel(self.labels[2])
     
     # create a barplot wih data provided to this class, also requires labesl for each bar 
     # xlabs a tuple or array of the bar labels, in order (for the x-axis)
     def bar_plot(self, xlabs=()):
         y_pos = np.arange(len(xlabs))
         plt.bar(y_pos, self.data, align='center', alpha=0.5)
-        plt.xticks(y_pos, xlabs)
-        plt.title = self.labels[0]
-        plt.xlabel = self.labels[1]
-        plt.ylabel = self.labels[2]
+        plt.title(self.labels[0])
+        plt.xlabel(self.labels[1])
+        plt.ylabel(self.labels[2])
         return plt
     
     # add moving averages line, initial points are point means until enough points to calculate proper moving average
@@ -95,7 +101,8 @@ class Plotter:
             img_data.seek(0)
 
             object = aws.Object(bucket_name, filename)
-            object.put(Body=img_data)
+            object.put(Body=img_data,ACL='public-read')
+            #s3_resource.ObjectAcl('covid-alert-graphics', 'current_code/current_metric.png',ACL='public-read')
 
             plt.close('all')
         else:

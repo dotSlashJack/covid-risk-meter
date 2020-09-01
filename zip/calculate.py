@@ -7,6 +7,11 @@ Created on Wed Aug 26 21:15:03 2020
 """
 import ThreatCalculator as threat
 
+"""
+function to generate a a numerical value based on cutoffs for later use
+perc the value to check against cutoffs
+rL the cutoffs to use
+"""   
 def thresholdRanger(perc, rL):
     if perc <= rL[0]:
         return 0
@@ -16,7 +21,12 @@ def thresholdRanger(perc, rL):
         return 2
     elif perc > rL[2]:
         return 3
-    
+
+"""
+function to generate a threat color based on overall cutoffs
+perc the value to check against cutoffs
+rL the cutoffs to use
+"""    
 def thresholdRangerThreat(perc, rL):
     if perc <= rL[0]:
         return "GREEN"
@@ -27,6 +37,9 @@ def thresholdRangerThreat(perc, rL):
     elif perc > rL[2]:
         return "RED"
 
+
+# function to generate an approximation of the Nevada State metrics, specific to Washoe County
+# param df, the pandas data frame containing all of the data needed
 def nv_state_calculator(df):
     test_pos = threat.ThreatCalculator(df, 'TestPositivity', 14, False, True, 7)
     test_pos_metric = test_pos.get_mean()
@@ -51,10 +64,14 @@ def nv_state_calculator(df):
         print("We currently meet the Nevada state threshold")
     return num_tests_metric, cases_hundothou_metric, test_pos_metric
     
-    
+
+# function to generate an apprximation of the Washoe County School distric metrics
+# param df, the pandas data frame containing all of the data needed    
 def school_dist_calculator(df):
     print("School calculator TBA")
-    
+
+# function to generate metrics for truckee meadows website
+# param df, the pandas data frame containing all of the data needed
 def metric_calcs(df):
     indSumList = []
     

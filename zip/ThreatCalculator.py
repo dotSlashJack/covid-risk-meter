@@ -162,6 +162,7 @@ class ThreatCalculator:
         second_mean = np.mean(second_data)
         return first_mean / second_mean
     
+    
     # calculate a summary of a moving average and slope
     # return the selected data (from relevant column, in order)
     # return the list of all moving averages
@@ -169,6 +170,7 @@ class ThreatCalculator:
     # return the slope from ols
     # return the quasi-intercept
     # return the dates for the data (in order)
+    # WARNING: this function will likely be deprecated in future versions
     def generateSummary(self,mov_avg_interval=7):
         #data = self.create_data_list(self.analaysis_var)
         selection = self.select_data(self.interval)
@@ -179,7 +181,8 @@ class ThreatCalculator:
         #    slope, quasi_intercept, latest_moving_avg = slope * 100, quasi_intercept * 100, latest_moving_avg *100
         #    [m * 100 for m in moving_avgs]
         return selection, moving_avgs, latest_moving_avg, slope, quasi_intercept, self.get_dates()
-            
+    
+    
             
         
 

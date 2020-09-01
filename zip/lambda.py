@@ -51,6 +51,7 @@ def lambda_handler(event, context):
         color = update_metric(df)
         #update_timestamp()
         #calculate.nv_state_calculator(df)
+        #calculate.school_dist_calculator(df)
 
         return {
             'statusCode': 200,
