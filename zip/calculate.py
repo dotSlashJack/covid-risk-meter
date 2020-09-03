@@ -76,7 +76,6 @@ def metric_calcs(df):
     indSumList = []
 
     # 1. 14-day trend of COVID test scheduling
-
     test_schedule = threat.ThreatCalculator(df, 'RiskAssess', 14)
     test_schedule_calc = test_schedule.ols_line()[0] # 1st item returned is slope
     if test_schedule.get_mean(7) < 20: # if on average <20 schedules over last week, then auto set at 0

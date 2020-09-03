@@ -14,28 +14,37 @@ import datetime as dt
 import calculate
 import plot
 
-def update_timestamp():
+def update_timestamp(s3_resource):
     update_timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #print(update_timestamp)
-    # TODO: finish implementation by putting text file in current_code dir
+    # convert timestamp string to bytes
+    txt_data = ''.join(format(x, 'b') for b in bytearray(update_timestamp, 'utf8'))
+    filename = 'latest-timestamp.txt'
+
+    object = s3.Object(bucket_name, filename)
+    object.put(Body=txt_data,ACL='public-read')
+
+    return update_timestamp
+
 
 def update_metric(df):
     threat_color, total_score = calculate.metric_calcs(df)
     # TODO: implement checking algorithm to see if there was a major drop/change in values
     # !!!!High priority!!!!
-    
+
     s3_resource = boto3.resource("s3")
     metric_to_copy = "covid-alert-graphics/" + threat_color.lower() + "_metric.png"
-    
+
     # remove the old metric
     s3_resource.Object("covid-alert-graphics", "current_code/current_metric.png").delete()
     # copy the correct image to s3 url that is fetched
     s3_resource.Object("covid-alert-graphics", "current_code/current_metric.png").copy_from(CopySource=metric_to_copy)
     s3_resource.ObjectAcl('covid-alert-graphics', 'current_code/current_metric.png').put(ACL='public-read')
-    
-    plot.plot_test(df,s3_resource)
 
-    return threat_color.lower()
+    #plot.plot_test(df,s3_resource)
+
+    timestamp = update_timestamp(s3_resource)
+
+    return threat_color.lower(), timestamp
 
 
 def lambda_handler(event, context):
@@ -48,19 +57,18 @@ def lambda_handler(event, context):
         b = io.BytesIO(file_content)  # read the excel file from aws format to python-friendly format
         df = pd.read_excel(b, sheet_name='data')
 
-        color = update_metric(df)
+        color, timestamp = update_metric(df)
         #update_timestamp()
         #calculate.nv_state_calculator(df)
         #calculate.school_dist_calculator(df)
 
         return {
             'statusCode': 200,
-            'body': file_name + " succesfully loaded and processed by AWS Lambda\n The color code was: " + color + "\n This calculation was completed at "# + update_timestamp
+            'body': file_name + " succesfully loaded and processed by AWS Lambda\n The color code was: " + color + "\n This calculation was completed at " + timestamp
         }
     except Exception as e:
         print(str(e))
         return {
             'statusCode': 500,
             'body': "There was an internal error while attempting to update the code. Please check the log or contact colab[at]jackhester[dot]com."
-        }  
-
+        }
