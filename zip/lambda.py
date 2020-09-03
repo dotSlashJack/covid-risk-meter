@@ -17,12 +17,14 @@ import plot
 def update_timestamp(s3_resource):
     update_timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # convert timestamp string to bytes
-    txt_data = ''.join(format(x, 'b') for b in bytearray(update_timestamp, 'utf8'))
+    #txt_data = ''.join(format(x, 'b') for x in bytearray(update_timestamp, 'utf8'))
     filename = 'latest-timestamp.txt'
+    bucket_name = "covid-alert-graphics"
 
-    object = s3.Object(bucket_name, filename)
-    object.put(Body=txt_data,ACL='public-read')
-
+    object = s3_resource.Object(bucket_name, filename)
+    #object.put(Body=txt_data,ACL='public-read')
+    object.put(Body=update_timestamp,ACL='public-read')
+    print('updated metric at ',update_timestamp)
     return update_timestamp
 
 
