@@ -4,7 +4,7 @@ Code for https://tmrpa.org/covid-wc, developed for the City of Reno Public Healt
 
 ### File structure
 
-The core code can be found under the ``zip'' folder.
+##### The core code can be found under the ``zip'' folder.
 
 ThreatCalculator: contains a class with methods to calculate useful summary statistics
 
