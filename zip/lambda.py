@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Aug 26 23:37:46 2020
-
-@author: jack hester and jeremy smith
+@author: jack hester
 """
 import boto3
 import json
@@ -16,17 +14,14 @@ import plot
 
 def update_timestamp(s3_resource):
     update_timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    # convert timestamp string to bytes
-    #txt_data = ''.join(format(x, 'b') for x in bytearray(update_timestamp, 'utf8'))
     filename = 'latest-timestamp.txt'
     bucket_name = "covid-alert-graphics"
 
     object = s3_resource.Object(bucket_name, filename)
-    #object.put(Body=txt_data,ACL='public-read')
     object.put(Body=update_timestamp,ACL='public-read')
     print('updated metric at ',update_timestamp)
     return update_timestamp
- 
+
 
 def update_metric(df):
     threat_color, total_score = calculate.metric_calcs(df)

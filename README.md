@@ -1,13 +1,26 @@
 # covid-alert
-Code for tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
+
+Code for https://tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
+
+### File structure
+
+ThreatCalculator: contains a class with methods to calculate useful summary statistics
+
+Plotter: contains a class to create plots and charts of data list
+
+plot: implementations of Plotter using COVID data list
+
+calculate: implements ThreatCalculator to calculate results
+
+lambda: communicate with AWS s3 buckets to update the threat meter, recommendations, and other supporting data
 
 ### Using with AWS Lambda:
 
-The lambda function and supporing code are located inside of the "zip" directory
+The lambda function and supporting code are located inside of the "zip" directory
 
 1. Install pandas, numpy, matplotlib, datetime, and all of their dependencies in a local environment, we recommend inside of the "zip" folder.
 
-2. Clean up files and zip the folder with your installations as well as lambda.py and threatMeter.py
+2. Clean up files and zip the folder with your installations as well as lambda.py, calculate.py, ThreatCalculator.py, and plot and Plotter.py if you wish to create plots (these two files are still under developed)
 
 3. Upload the zip to AWS Lambda (probably via an s3 bucket)
 
@@ -19,16 +32,10 @@ The lambda function and supporing code are located inside of the "zip" directory
 
 7. Access the URL of that updated image stored on the s3 bucket
 
-### Other files
-
-There are a few other files on here in the "misc" folder that we have used to grab some of the data and work towards a frontend website (e.g., dhss_covid_scraper.py). You are welcome to take a look at those, but they are probably not very useful to you. We also have an admin upload page that we use to upload the new excel file each day (and automatically update the metric from there); feel free to contact us if you would like information on how to set up your own admin page or would like a copy of our code for that portion of the project. These files will likely be removed from the main repository by September 4, 2020. We will likely maintain a copy on the active dev branch.
-
 ### Contact
 
-colab[at]jackhester[dot]com or jsmith[at]tmrpa[dot]org
+There is a contact for at the bottom of the website, tmrpa.org/covid-wc, that you can use to ask questions or submit recommendations.
 
-&#x1F534;
->#
->This code is still under development and is NOT intended for public use. We provide no warranty or guarantee that our code works or will be useful or accurate.
->#
-&#x1F534;
+### Additional notes
+
+We are making this code open source to help stakeholders and researchers understand our metrics and perform their own calculations. Please note that we do not provide any guarantees about the code or its performance. Please note that some of the code is only partially implemented at this time  (such as Plotter).

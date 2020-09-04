@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Aug 26 21:15:03 2020
-
 @author: jack hester and jeremy smith
 """
 import ThreatCalculator as threat
