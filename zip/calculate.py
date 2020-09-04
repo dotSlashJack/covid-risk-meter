@@ -31,11 +31,19 @@ def thresholdRangerThreat(perc, rL):
     if perc <= rL[0]:
         return "GREEN"
     elif perc > rL[0] and perc <= rL[1]:
-        return "YELLOW"
+        return "YELLOW1"
     elif perc > rL[1] and perc <= rL[2]:
-        return "ORANGE"
-    elif perc > rL[2]:
-        return "RED"
+        return "YELLOW2"
+    elif perc > rL[2] and perc <= rL[3]:
+        return "ORANGE1"
+    elif perc > rL[3] and perc <= rL[4]:
+        return "ORANGE2"
+    elif perc > rL[4] and perc <= rL[5]:
+        return "RED1"
+    elif perc > rL[5] and perc <= rL[6]:
+        return "RED2"
+    elif perc > rL[6]
+        return "PURPLE"
 
 
 # function to generate an approximation of the Nevada State metrics, specific to Washoe County
@@ -78,15 +86,15 @@ def metric_calcs(df):
     # 1. 14-day trend of COVID test scheduling
     test_schedule = threat.ThreatCalculator(df, 'RiskAssess', 14)
     test_schedule_calc = test_schedule.ols_line()[0] # 1st item returned is slope
-    if test_schedule.get_mean(7) < 20: # if on average <20 schedules over last week, then auto set at 0
+    if test_schedule.get_mean(14) < 25: # if on average <20 schedules over last 14 days, then auto set at 0
         indSumList.append(0)
     else:
-        indSumList.append(thresholdRanger(test_schedule.ols_line()[0], [-33,15,33]))
+        indSumList.append(thresholdRanger(test_schedule.ols_line()[0], [-33,10,33]))
 
     # 2. Previous day test positivity
     test_pos = threat.ThreatCalculator(df, 'TestPositivity', 1)
     # there isn't really a mean of 1 value, but this makes it more flexible
-    indSumList.append(thresholdRanger(test_pos.get_mean(), [0.05,0.10,0.20]))
+    indSumList.append(thresholdRanger(test_pos.get_mean(), [0.03,0.07,0.12]))
 
 
     # 3. 7-day average of daily cases / 100,000
@@ -100,33 +108,33 @@ def metric_calcs(df):
     covid_hosp_rate = threat.ThreatCalculator(df, 'Total_COVID', 7)
     covid_hosp_calc = covid_hosp_rate.to_percentage(covid_hosp_rate.diff_avg_over_second_avg(14))
     #print(covid_hosp_calc)
-    indSumList.append(0.5 * thresholdRanger(covid_hosp_calc, [-5,5,25]))
+    indSumList.append(0.5 * thresholdRanger(covid_hosp_calc, [-5,5,20]))
 
     # 4b. % diffence of 7-day and 14-day average in icu use due to covid...
     # ...divided by the 14-day average in icu use due to covid
     # assigned 1/2 weight
     covid_icu_use = threat.ThreatCalculator(df, 'COVID_ICU', 7)
     covid_icu_calc = covid_icu_use.to_percentage(covid_icu_use.diff_avg_over_second_avg(14))
-    indSumList.append(0.5 * thresholdRanger(covid_icu_calc, [-5,5,25]))
+    indSumList.append(0.5 * thresholdRanger(covid_icu_calc, [-5,5,20]))
 
 
     # 5a. % utilization of overall hospital beds, avg over 7 days
     # assigned 1/2 weight
     hosp_use = threat.ThreatCalculator(df, 'Inpatient', 7)
     hosp_use_calc = hosp_use.to_percentage(hosp_use.div_avgs('Staffed_Beds'))
-    indSumList.append(0.5 * thresholdRanger(hosp_use_calc, [70,80,85]))
+    indSumList.append(0.5 * thresholdRanger(hosp_use_calc, [70,80,90]))
 
 
     # 5b. % utilization of overall icu beds, avg over 7 days
     # assigned 1/2 weight
     icu_use = threat.ThreatCalculator(df, 'ICU_Beds_Occ', 7)
     icu_use_calc = icu_use.to_percentage(icu_use.div_avgs('ICU_Beds'))
-    indSumList.append(0.5 * thresholdRanger(icu_use_calc, [70,80,85]))
+    indSumList.append(0.5 * thresholdRanger(icu_use_calc, [70,80,90]))
 
     grandScore = sum(indSumList)
     #print(indSumList)
     #print(grandScore)
-    rl = [1,4.5,9.5]   # current breaks for threat score
+    rl = [1,3,5,7,9,11,13]   # current breaks for threat score
     overall_threat = thresholdRangerThreat(grandScore,rl)
     print("Threat color: "+overall_threat)
 
