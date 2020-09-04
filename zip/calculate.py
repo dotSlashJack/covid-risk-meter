@@ -42,7 +42,7 @@ def thresholdRangerThreat(perc, rL):
         return "RED1"
     elif perc > rL[5] and perc <= rL[6]:
         return "RED2"
-    elif perc > rL[6]
+    elif perc > rL[6]:
         return "PURPLE"
 
 

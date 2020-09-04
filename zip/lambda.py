@@ -26,7 +26,7 @@ def update_timestamp(s3_resource):
     object.put(Body=update_timestamp,ACL='public-read')
     print('updated metric at ',update_timestamp)
     return update_timestamp
-
+ 
 
 def update_metric(df):
     threat_color, total_score = calculate.metric_calcs(df)
