@@ -1,10 +1,10 @@
-# covid-alert
+# Covid Risk Metric Code
 
-Code for https://tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
+Support and backend code for https://tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
 
 ### File structure
 
-##### The core code can be found under the ``zip'' folder.
+##### The core code can be found under the "zip" folder.
 
 ThreatCalculator: contains a class with methods to calculate useful summary statistics
 
@@ -15,6 +15,12 @@ plot: implementations of Plotter using COVID data list
 calculate: implements ThreatCalculator to calculate results
 
 lambda: communicate with AWS s3 buckets to update the threat meter, recommendations, and other supporting data
+
+### Expected data table structure
+
+This code is designed to work when provided an excel file. You can, however, use a different format as long as it's brought into a pandas data frame (see lambda.py and calculate.py to see how we handle this). Each value or set of values we use in a calculation is in its own column.
+
+You can also provide your own column names to perform calculations on (so long as you provide the name when instantiating the ThreatCalculator class), as we do in calculate.py. You can see the column names we use in that file, and each instantiation of the ThreatMeter class is commented so you can understand how we performed each calculation.
 
 ### Using with AWS Lambda:
 
