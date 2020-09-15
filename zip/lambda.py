@@ -7,20 +7,36 @@ import boto3
 import json
 import pandas as pd
 import io
-import datetime as dt
+from datetime import datetime
+from pytz import timezone
+import pytz
 
 import calculate
 import plot
 
 def update_timestamp(s3_resource):
-    update_timestamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now(tz=pytz.utc)
+    pacific_timestamp = timestamp.astimezone(timezone('US/Pacific'))
+    minute = pacific_timestamp.strftime("%M")
+    hour = pacific_timestamp.hour
+    apm = "" # is it am or pm?
+    if hour == 12:
+        apm = ' PM'
+    elif hour-12 > 0:
+        hour = hour%12
+        apm = ' PM'
+    elif hour == 0:
+        hour = 12
+        apm = ' AM'
+    update_time_friendly = "Last updated on "+pacific_timestamp.strftime("%m/%d/%Y")+" at "+str(hour)+":"+minute+apm
+    
     filename = 'latest-timestamp.txt'
     bucket_name = "covid-alert-graphics"
-
     object = s3_resource.Object(bucket_name, filename)
-    object.put(Body=update_timestamp,ACL='public-read')
-    print('updated metric at ',update_timestamp)
-    return update_timestamp
+    object.put(Body=update_time_friendly,ACL='public-read')
+    
+    print(update_time_friendly)
+    return update_time_friendly
 
 
 def update_metric(df):
@@ -55,7 +71,6 @@ def lambda_handler(event, context):
         df = pd.read_excel(b, sheet_name='data')
 
         color, timestamp = update_metric(df)
-        #update_timestamp()
         #calculate.nv_state_calculator(df)
         #calculate.school_dist_calculator(df)
 
