@@ -90,13 +90,14 @@ def metric_calcs(df):
         indSumList.append(thresholdRanger(test_schedule.ols_line()[0], [-33,10,33]))
 
     # 2. Previous day test positivity
-    test_pos = threat.ThreatCalculator(df, 'TestPositivity', 1)
-    # there isn't really a mean of 1 value, but this makes it more flexible
-    indSumList.append(thresholdRanger(test_pos.get_mean(), [0.03,0.07,0.12]))
-
+    test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 1)
+    #test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 7)
+    indSumList.append(thresholdRanger(test_pos.select_data(1)[0], [0.03,0.07,0.12]))
+    #indSumList.append(thresholdRanger(test_pos.get_mean(), [0.03,0.07,0.12]))
+    #TODO: update when daily num available
 
     # 3. 7-day average of daily cases / 100,000
-    case_rate = threat.ThreatCalculator(df, 'dailyCases', 7, 4.78)
+    case_rate = threat.ThreatCalculator(df, 'dailyCases', 7, 4.7)
     case_rate_calc = case_rate.normalize(case_rate.get_mean())
     indSumList.append(thresholdRanger(case_rate_calc, [1,9,25]))
 
