@@ -56,3 +56,5 @@ website/*
 deprecated/
 deprecated/*
 zip/test.py
+zip/__pycache__/
+zip/__pycache__/*_
