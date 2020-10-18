@@ -4,44 +4,7 @@
 @author: jack hester and jeremy smith
 """
 import ThreatCalculator as threat
-
-"""
-function to generate a a numerical value based on cutoffs for later use
-perc the value to check against cutoffs
-rL the cutoffs to use
-"""
-def thresholdRanger(perc, rL):
-    if perc <= rL[0]:
-        return 0
-    elif perc > rL[0] and perc <= rL[1]:
-        return 1
-    elif perc > rL[1] and perc <= rL[2]:
-        return 2
-    elif perc > rL[2]:
-        return 3
-
-"""
-function to generate a threat color based on overall cutoffs
-perc the value to check against cutoffs
-rL the cutoffs to use
-"""
-def thresholdRangerThreat(perc, rL):
-    if perc <= rL[0]:
-        return "GREEN"
-    elif perc > rL[0] and perc <= rL[1]:
-        return "YELLOW1"
-    elif perc > rL[1] and perc <= rL[2]:
-        return "YELLOW2"
-    elif perc > rL[2] and perc <= rL[3]:
-        return "ORANGE1"
-    elif perc > rL[3] and perc <= rL[4]:
-        return "ORANGE2"
-    elif perc > rL[4] and perc <= rL[5]:
-        return "RED1"
-    elif perc > rL[5] and perc <= rL[6]:
-        return "RED2"
-    elif perc > rL[6]:
-        return "PURPLE"
+import utils
 
 
 # function to generate an approximation of the Nevada State metrics, specific to Washoe County
@@ -87,19 +50,19 @@ def metric_calcs(df):
     if test_schedule.get_mean(14) < 25: # if on average <20 schedules over last 14 days, then auto set at 0
         indSumList.append(0)
     else:
-        indSumList.append(thresholdRanger(test_schedule.ols_line()[0], [-33,10,33]))
+        indSumList.append(utils.thresholdRanger(test_schedule.ols_line()[0], [-33,10,33]))
 
     # 2. Previous day test positivity
     test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 1)
     #test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 7)
-    indSumList.append(thresholdRanger(test_pos.select_data(1)[0], [0.03,0.07,0.12]))
-    #indSumList.append(thresholdRanger(test_pos.get_mean(), [0.03,0.07,0.12]))
+    indSumList.append(utils.thresholdRanger(test_pos.select_data(1)[0], [0.03,0.07,0.12]))
+    #indSumList.append(utils.thresholdRanger(test_pos.get_mean(), [0.03,0.07,0.12]))
     #TODO: update when daily num available
 
     # 3. 7-day average of daily cases / 100,000
     case_rate = threat.ThreatCalculator(df, 'dailyCases', 7, 4.7)
     case_rate_calc = case_rate.normalize(case_rate.get_mean())
-    indSumList.append(thresholdRanger(case_rate_calc, [1,9,25]))
+    indSumList.append(utils.thresholdRanger(case_rate_calc, [1,9,25]))
 
     # 4a. % diffence of 7-day and 14-day average in hospitalizations due to covid...
     # ...divided by the 14-day average in hospitalizations due to covid
@@ -107,34 +70,34 @@ def metric_calcs(df):
     covid_hosp_rate = threat.ThreatCalculator(df, 'Total_COVID', 7)
     covid_hosp_calc = covid_hosp_rate.to_percentage(covid_hosp_rate.diff_avg_over_second_avg(14))
     #print(covid_hosp_calc)
-    indSumList.append(0.5 * thresholdRanger(covid_hosp_calc, [-5,5,20]))
+    indSumList.append(0.5 * utils.thresholdRanger(covid_hosp_calc, [-5,5,20]))
 
     # 4b. % diffence of 7-day and 14-day average in icu use due to covid...
     # ...divided by the 14-day average in icu use due to covid
     # assigned 1/2 weight
     covid_icu_use = threat.ThreatCalculator(df, 'COVID_ICU', 7)
     covid_icu_calc = covid_icu_use.to_percentage(covid_icu_use.diff_avg_over_second_avg(14))
-    indSumList.append(0.5 * thresholdRanger(covid_icu_calc, [-5,5,20]))
+    indSumList.append(0.5 * utils.thresholdRanger(covid_icu_calc, [-5,5,20]))
 
 
     # 5a. % utilization of overall hospital beds, avg over 7 days
     # assigned 1/2 weight
     hosp_use = threat.ThreatCalculator(df, 'Inpatient', 7)
     hosp_use_calc = hosp_use.to_percentage(hosp_use.div_avgs('Staffed_Beds'))
-    indSumList.append(0.5 * thresholdRanger(hosp_use_calc, [70,80,90]))
+    indSumList.append(0.5 * utils.thresholdRanger(hosp_use_calc, [70,80,90]))
 
 
     # 5b. % utilization of overall icu beds, avg over 7 days
     # assigned 1/2 weight
     icu_use = threat.ThreatCalculator(df, 'ICU_Beds_Occ', 7)
     icu_use_calc = icu_use.to_percentage(icu_use.div_avgs('ICU_Beds'))
-    indSumList.append(0.5 * thresholdRanger(icu_use_calc, [70,80,90]))
+    indSumList.append(0.5 * utils.thresholdRanger(icu_use_calc, [70,80,90]))
 
     grandScore = sum(indSumList)
     #print(indSumList)
     #print(grandScore)
     rl = [1,3,5,7,9,11,13]   # current breaks for threat score
-    overall_threat = thresholdRangerThreat(grandScore,rl)
+    overall_threat = utils.thresholdRangerThreat(grandScore,rl)
     print("Threat color: "+overall_threat)
 
     return overall_threat, grandScore
