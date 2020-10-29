@@ -10,7 +10,6 @@ import calc_utils
 # function to generate an approximation of the Nevada State metrics, specific to Washoe County
 # see details at https://nvhealthresponse.nv.gov/
 # param df, the pandas data frame containing all of the data needed
-#s#elf, df, analysis_var, interval, normalizer=False, delay=0
 def nv_state_calculator(df):
     # test positivity
     test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 14, False, 7)
