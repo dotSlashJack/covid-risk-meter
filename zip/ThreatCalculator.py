@@ -88,6 +88,11 @@ class ThreatCalculator:
         return np.mean(self.select_data(interval))
 
 
+    # get the sum of the data provided over the interval provided (at init)
+    def get_sum(self):
+        return sum(self.select_data(self.interval))
+
+
     # calculate a moving average
     # data is a list containing the data to calculate on
     # interval is number of days you want to calculate average(s) over
