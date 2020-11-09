@@ -40,25 +40,16 @@ def nv_state_calculator(df):
     return num_tests_metric, cases_hundothou_metric, test_pos_metric
 
 
-# function to generate an apprximation of the Washoe County School distric metrics
-# param df, the pandas data frame containing all of the data needed
-# may be implemented in a future version
-#def school_dist_calculator(df):
-#    print("School calculator TBA")
-
-
 # function to generate metrics for truckee meadows website
 # param df, the pandas data frame containing all of the data needed
-def metric_calcs(df):
+# param printList true to print the list of each score's value, false to not print
+def metric_calcs(df, returnSumList=False):
     indSumList = []
 
     # 1. 14-day trend of COVID test scheduling
     test_schedule = threat.ThreatCalculator(df, 'RiskAssess', 14)
-    test_schedule_calc = test_schedule.ols_line()[0] # 1st item returned is slope
-    if test_schedule.get_mean(14) < 25: # if on average <20 schedules over last 14 days, then auto set at 0
-        indSumList.append(0)
-    else:
-        indSumList.append(calc_utils.thresholdRanger(test_schedule.ols_line()[0], [-33,10,33]))
+    test_schedule_clac = test_schedule.get_mean()
+    indSumList.append(calc_utils.thresholdRanger(test_schedule_clac, [25,265,400]))
 
     # 2. Previous day test positivity
     test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 1)
@@ -102,10 +93,11 @@ def metric_calcs(df):
     indSumList.append(0.5 * calc_utils.thresholdRanger(icu_use_calc, [70,80,90]))
 
     grandScore = sum(indSumList)
-    #print(indSumList)
-    #print(grandScore)
     overall_cutoffs = [1,3,5,7,9,11,13]   # current breaks for threat score
     overall_threat = calc_utils.thresholdRangerThreat(grandScore,overall_cutoffs)
-    print("Threat color: "+overall_threat)
+    #print("Threat color: "+overall_threat)
 
-    return overall_threat, grandScore
+    if returnSumList:
+        return indSumList, overall_threat, grandScore
+    else:
+        return overall_threat, grandScore

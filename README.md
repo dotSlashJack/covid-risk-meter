@@ -1,10 +1,12 @@
-# Covid Risk Metric Code
+# Covid Risk Meter Code
 
 Support and backend code for https://tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
 
 ### File structure
 
 ##### The core code can be found under the "zip" folder.
+
+local_run: allows you to run the meter locally (if you don't want to run with AWS). Rcommended to delete this from "zip" if you upload to AWS. Usage: python local_run.py --x <path/to/excel.xlsx> -m <meter> or <state> for state calculator.
 
 ThreatCalculator: contains a class with methods to calculate useful summary statistics
 
@@ -15,6 +17,8 @@ plot: implementations of Plotter using COVID data list
 calculate: implements ThreatCalculator to calculate results
 
 lambda: communicate with AWS s3 buckets to update the threat meter, recommendations, and other supporting data
+
+calc_utils: assorted utility functions for generating the overall score and color, any other misc. utility functions
 
 ### Expected data table structure
 
@@ -28,7 +32,7 @@ The lambda function and supporting code are located inside of the "zip" director
 
 1. Install pandas, numpy, matplotlib, datetime, and all of their dependencies in a local environment, we recommend inside of the "zip" folder.
 
-2. Clean up files and zip the folder with your installations as well as lambda.py, calculate.py, ThreatCalculator.py, and plot and Plotter.py if you wish to create plots (these two files are still under developed)
+2. Clean up files and zip the folder with your installations as well as lambda.py, calculate.py, ThreatCalculator.py, calc_utils.py, and plot and Plotter.py if you wish to create plots (these two files are still under developed)
 
 3. Upload the zip to AWS Lambda (probably via an s3 bucket)
 
@@ -39,6 +43,12 @@ The lambda function and supporting code are located inside of the "zip" director
 6. Ensure this event updates the correct image (here, current.png) and public read access is granted
 
 7. Access the URL of that updated image stored on the s3 bucket
+
+### Changelog
+
+v 1.1
+- The calculation for the risk assessments was updated and uses a mean in stead of slopes and cutoffs were changed accordingly
+- A new file was added to allow users to run the code locally
 
 ### Contact
 

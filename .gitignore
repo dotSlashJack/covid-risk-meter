@@ -58,3 +58,7 @@ deprecated/*
 zip/test.py
 zip/__pycache__/
 zip/__pycache__/*_
+.DS_Store
+zip/.DS_Store
+__pycache__/
+__pycache__/*
