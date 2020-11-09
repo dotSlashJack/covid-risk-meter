@@ -46,7 +46,7 @@ def nv_state_calculator(df):
 def metric_calcs(df, returnSumList=False):
     indSumList = []
 
-    # 1. 14-day trend of COVID test scheduling
+    # 1. 14-day avg of COVID test scheduling
     test_schedule = threat.ThreatCalculator(df, 'RiskAssess', 14)
     test_schedule_clac = test_schedule.get_mean()
     indSumList.append(calc_utils.thresholdRanger(test_schedule_clac, [25,265,400]))
