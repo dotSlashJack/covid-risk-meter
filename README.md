@@ -6,7 +6,7 @@ Support and backend code for https://tmrpa.org/covid-wc, developed for the City 
 
 ##### The core code can be found under the "zip" folder.
 
-local_run: allows you to run the meter locally (if you don't want to run with AWS). Rcommended to delete this from "zip" if you upload to AWS. Usage: python local_run.py --x <path/to/excel.xlsx> -m <meter> or <state> for state calculator.
+local_run: allows you to run the meter locally (if you don't want to run with AWS). Rcommended to delete this from "zip" if you upload to AWS. Usage: python local_run.py --x &lt;path/to/excel.xlsx> -m &lt;meter> or &lt;state> for state calculator.
 
 ThreatCalculator: contains a class with methods to calculate useful summary statistics
 
