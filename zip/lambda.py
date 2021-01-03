@@ -40,7 +40,12 @@ def update_timestamp(s3_resource):
 
 
 def update_metric(df):
-    sum_list, threat_color, total_score = calculate.metric_calcs(df, True)
+
+    sum_list, threat_color, total_score = calculate.metric_calcs(df)
+
+    print(sum_list)
+    print(threat_color)
+    print(total_score)
     # TODO: implement checking algorithm to see if there was a major drop/change in values
     # !!!!High priority!!!!
 

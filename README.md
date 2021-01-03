@@ -1,6 +1,12 @@
 # Covid Risk Meter Code
 
-Support and backend code for https://tmrpa.org/covid-wc, developed for the City of Reno Public Health Emergency Advisory Board
+Support and backend code for covidriskmeter.org, developed for the City of Reno Public Health Emergency Advisory Board
+
+&#x1F534;
+>#
+>**WARNING:** The most recent upload is an intermediate step as we prepare for the next generation of the tool. The GUI and predictive tool are NOT the finished versions! Please also note: the AWS supporting files will be REMOVED in the next version, as we are removing explicit support for this functionality in future versions. Plotting functions have been nearly universally disabled in this version, as the current GUI has not added support for the plotting functions yet. Our new version will be released no later than January 15th.
+>#
+&#x1F534;
 
 ### File structure
 
@@ -26,6 +32,28 @@ This code is designed to work when provided an excel file. You can, however, use
 
 You can also provide your own column names to perform calculations on (so long as you provide the name when instantiating the ThreatCalculator class), as we do in calculate.py. You can see the column names we use in that file, and each instantiation of the ThreatMeter class is commented so you can understand how we performed each calculation.
 
+### Running locally:
+
+Option 1, command line:
+
+1. Navigate to the "zip" folder inside of the main folder
+
+2. Run: python local_run.py --x &lt;path/to/excel.xlsx> -m &lt;meter> for the main meter, &lt;state> for state calculator, or &lt;predict> for the predictive tool. If you only run with the excel argument, the tool will run the main meter calculations ONLY by default
+
+Option 2, GUI:
+
+1. Navigate to the "zip" folder inside of the main folder
+
+2. Run: python local_run.py
+
+3. Choose your excel file with the button with the "Select Excel File"
+
+4. Check the boxes method(s) you would like to run
+
+5. Click RUN
+
+6. Your results will be printed in the console/terminal where you ran the file from. Outputs will later be provided in file format as well.
+
 ### Using with AWS Lambda:
 
 The lambda function and supporting code are located inside of the "zip" directory
@@ -46,14 +74,18 @@ The lambda function and supporting code are located inside of the "zip" director
 
 ### Changelog
 
+v 1.2
+- Added GUI support for users who do not want to use command line arguments
+- Predictive tool framework added, but it is NOT the most recent version
+
 v 1.1
 - The calculation for the risk assessments was updated and uses a mean in stead of slopes and cutoffs were changed accordingly
 - A new file was added to allow users to run the code locally
 
 ### Contact
 
-There is a contact for at the bottom of the website, tmrpa.org/covid-wc, that you can use to ask questions or submit recommendations.
+There is a contact for at the bottom of the website, covidriskmeter.org, that you can use to ask questions or submit recommendations. You can also reach out to <a href="https://jackhester.com/contact.html">Jack Hester</a>, the main creator of this code.
 
 ### Additional notes
 
-We are making this code open source to help stakeholders and researchers understand our metrics and perform their own calculations. Please note that we do not provide any guarantees about the code or its performance. Please note that some of the code is only partially implemented at this time  (such as Plotter).
+We are making this code open source to help stakeholders and researchers understand our metrics and perform their own calculations. Please note that we do not provide any guarantees about the code or its performance. Please note that some of the code is only partially implemented at this time (such as Plotter).

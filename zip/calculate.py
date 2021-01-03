@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: jack hester and jeremy smith
+@author: jack hester, jeremy smith, and aditya nair
 """
+import sys
+import numpy as np
+import scipy as sp
+from scipy.integrate import odeint
+from sindy_data import SindyData
 import ThreatCalculator as threat
 import calc_utils
 
@@ -42,19 +47,24 @@ def nv_state_calculator(df):
 
 # function to generate metrics for truckee meadows website
 # param df, the pandas data frame containing all of the data needed
-# param printList true to print the list of each score's value, false to not print
-def metric_calcs(df, returnSumList=False):
+# param returnForPredict true to return the metric objects to get data from for prediction
+# TODO: add other params here
+def metric_calcs(df, returnForPredict=False,
+    test_schedule_params={'dataColumn': 'RiskAssess','avgPeriod': 14, 'cutoffs':[25,265,400]},
+    test_pos_params={'dataColumn': 'FactorPositivity','avgPeriod':1, 'cutoffs':[0.03,0.07,0.12]}
+    ):
     indSumList = []
 
     # 1. 14-day avg of COVID test scheduling
-    test_schedule = threat.ThreatCalculator(df, 'RiskAssess', 14)
+    #test_schedule = threat.ThreatCalculator(df, 'RiskAssess', 14)
+    test_schedule = threat.ThreatCalculator(df, test_schedule_params['dataColumn'], test_schedule_params['avgPeriod'])
     test_schedule_clac = test_schedule.get_mean()
-    indSumList.append(calc_utils.thresholdRanger(test_schedule_clac, [25,265,400]))
+    indSumList.append(calc_utils.thresholdRanger(test_schedule_clac, test_schedule_params['cutoffs']))
 
     # 2. Previous day test positivity
-    test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 1)
-    #test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 7)
-    indSumList.append(calc_utils.thresholdRanger(test_pos.select_data(1)[0], [0.03,0.07,0.12]))
+    test_pos = threat.ThreatCalculator(df, test_pos_params['dataColumn'], test_pos_params['avgPeriod'])
+    #test_pos = threat.ThreatCalculator(df, 'FactorPositivity', 1)
+    indSumList.append(calc_utils.thresholdRanger(test_pos.select_data(1)[0], test_pos_params['cutoffs']))
     #indSumList.append(calc_utils.thresholdRanger(test_pos.get_mean(), [0.03,0.07,0.12]))
     #TODO: update when daily num available
 
@@ -97,7 +107,82 @@ def metric_calcs(df, returnSumList=False):
     overall_threat = calc_utils.thresholdRangerThreat(grandScore,overall_cutoffs)
     #print("Threat color: "+overall_threat)
 
-    if returnSumList:
-        return indSumList, overall_threat, grandScore
+    if returnForPredict:
+        return test_schedule, test_pos, case_rate, covid_hosp_rate, covid_icu_use, hosp_use, icu_use
     else:
-        return overall_threat, grandScore
+        return indSumList, overall_threat, grandScore
+
+def generate_predictions(df):
+    # Predictive meter
+    test_schedule, test_pos, case_rate, covid_hosp_rate, covid_icu_use, hosp_use, icu_use = metric_calcs(df, True)
+    indSumList_preds, overall_thread_preds, grandScore_preds = [],[],[]
+
+    # compile data to matrix
+    x_data = np.array((test_schedule.data, test_pos.data, case_rate.data, covid_hosp_rate.data, covid_icu_use.data, hosp_use.data, icu_use.data))
+    # differentiate data
+    dx_data = calc_utils.differentiate(x_data, 1)
+    # Datasets (number of days * number of variables)
+    x = np.transpose(x_data)
+    dx = np.transpose(dx_data)
+    # Create regression object
+    sindy_covid = SindyData(x[10:,:],dx[10:,:],2,calc_utils.polyLib)
+    # Create polynomial basis functions
+    Theta = sindy_covid.library(sindy_covid.X,sindy_covid.poly_order)
+    # Regression coefficients
+    sigma0 = np.linalg.lstsq(Theta,sindy_covid.dX,rcond=None)[0]
+    # Simulate future data based on last day data (6-day prediction)
+    x_pred = sindy_covid.simulate(sigma0,x[-1,:],list(range(0, 6)))
+    #print(x_pred)
+    #print(x_pred[5:,0])
+    #print(x_pred[5:,0])
+
+    for i in range(0,5):
+        indSumList_pred = []
+        # Predictive indicator variables
+        test_schedule_pred = test_schedule
+        test_schedule_pred.data = x_pred[i:,0]
+        test_schedule_calc_pred = test_schedule.get_mean()
+        indSumList_pred.append(calc_utils.thresholdRanger(test_schedule_pred.ols_line()[0], [25,265,400]))
+        
+        
+        test_pos_pred = test_pos
+        test_schedule_pred.data = x_pred[i:,1]
+        indSumList_pred.append(calc_utils.thresholdRanger(test_pos_pred.select_data(1)[0], [0.03,0.07,0.12]))
+
+
+        case_rate_pred = case_rate
+        case_rate_pred.data = x_pred[i:,2]
+        case_rate_calc_pred = case_rate_pred.normalize(case_rate_pred.get_mean())
+        indSumList_pred.append(calc_utils.thresholdRanger(case_rate_calc_pred, [1,9,25]))
+
+        covid_hosp_rate_pred = covid_hosp_rate
+        covid_hosp_rate_pred.data = x_pred[i:,3]
+        covid_hosp_calc_pred = covid_hosp_rate_pred.to_percentage(covid_hosp_rate_pred.diff_avg_over_second_avg(14))
+        indSumList_pred.append(0.5 * calc_utils.thresholdRanger(covid_hosp_calc_pred, [-5,5,20]))
+
+        covid_icu_use_pred = covid_icu_use
+        covid_icu_use_pred.data = x_pred[i:,4]
+        covid_icu_calc_pred = covid_icu_use_pred.to_percentage(covid_icu_use_pred.diff_avg_over_second_avg(14))
+        indSumList_pred.append(0.5 * calc_utils.thresholdRanger(covid_icu_calc_pred, [-5,5,20]))
+
+
+        hosp_use_pred = hosp_use
+        hosp_use_pred.data = x_pred[i:,5]
+        hosp_use_calc_pred = hosp_use.to_percentage(hosp_use_pred.div_avgs('Staffed_Beds'))
+        indSumList_pred.append(0.5 * calc_utils.thresholdRanger(hosp_use_calc_pred, [70,80,90]))
+
+
+        icu_use_pred = icu_use
+        icu_use_pred.data = x_pred[i:,6]
+        icu_use_calc_pred = icu_use_pred.to_percentage(icu_use_pred.div_avgs('ICU_Beds'))
+        indSumList_pred.append(0.5 * calc_utils.thresholdRanger(icu_use_calc_pred, [70,80,90]))
+        
+        overall_cutoffs = [1,3,5,7,9,11,13]   # current breaks for threat score
+        grandScore_pred = sum(indSumList_pred)
+        overall_threat_pred = calc_utils.thresholdRangerThreat(grandScore_pred,overall_cutoffs)
+        indSumList_preds.append(indSumList_pred)
+        overall_thread_preds.append(overall_threat_pred)
+        grandScore_preds.append(grandScore_pred)
+        
+    #return indSumList_pred, overall_threat_pred, grandScore_pred
+    return indSumList_preds, overall_thread_preds, grandScore_preds

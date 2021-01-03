@@ -62,3 +62,7 @@ zip/__pycache__/*_
 zip/.DS_Store
 __pycache__/
 __pycache__/*
+aws/
+aws/*
+graphics/
+graphics/*
